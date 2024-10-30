@@ -12,4 +12,4 @@ jobs:
       - name: Build the Docker image
         run: docker build . -t ghc.io/rafaeltovargarrido/app:latest
       - name: Push the Docker image
-        run: docker push ghc.io/rafaeltovargarrido/app:latest
+        run: docker push ghc.io/rafaeltovargarrido/k8s:latest
