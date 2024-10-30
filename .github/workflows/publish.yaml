@@ -10,6 +10,6 @@ jobs:
       - name: Login to Docker Registry
         run: docker login --username rafaeltovargarrido  --password ${{ secrets.GH_PAT }} ghcr.io
       - name: Build the Docker image
-        run: docker build . -t ghc.io/rafaeltovargarrido/k8s:latest
+        run: docker build . -t ghcr.io/rafaeltovargarrido/k8s:latest
       - name: Push the Docker image
-        run: docker push ghc.io/rafaeltovargarrido/k8s:latest
+        run: docker push ghcr.io/rafaeltovargarrido/k8s:latest
