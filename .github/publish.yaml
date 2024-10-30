@@ -1,0 +1,15 @@
+name: Docker Image
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Login to Docker Registry
+        run: docker login --username rafaeltovargarrido  --password ${{ secrets.GH_PAT }} ghc.io
+      - name: Build the Docker image
+        run: docker build . -t ghc.io/rafaeltovargarrido/app:latest
+      - name: Push the Docker image
+        run: docker push ghc.io/rafaeltovargarrido/app:latest
