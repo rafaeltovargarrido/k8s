@@ -21,4 +21,8 @@ class HelloController {
     public String home() {
         return "Hello Docker World";
     }
+    @GetMapping("/hi")
+    public String hi() {
+        return "hi";
+    }    
 }
