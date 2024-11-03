@@ -17,3 +17,7 @@ jobs:
         run: docker build . -t ghcr.io/${{ github.actor }}/k8s:latest
       - name: Push the Docker image
         run: docker push ghcr.io/${{ github.actor }}/k8s:latest
+      - name: Build and push app2 image
+        run: |
+          docker build -t ghcr.io/${{ github.actor }}/app2:latest .
+          docker push ghcr.io/${{ github.actor }}/app2:latest        
