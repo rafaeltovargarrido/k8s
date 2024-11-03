@@ -18,6 +18,8 @@ jobs:
       - name: Push the Docker image
         run: docker push ghcr.io/${{ github.actor }}/k8s:latest
       - name: Build and push React image
-        run: |
-          docker build -t ghcr.io/${{ github.actor }}/react:latest . -f ./react-app/Dockerfile
-          docker push ghcr.io/${{ github.actor }}/react:latest        
+        uses: docker/build-push-action@v6
+        with:
+          context: ./react-app/
+          push: true
+          tags: ghcr.io/${{ github.actor }}/react:latest
