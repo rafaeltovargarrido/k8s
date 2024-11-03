@@ -7,9 +7,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Login to Docker Registry
-        run: docker login --username rafaeltovargarrido  --password ${{ secrets.GH_PAT }} ghcr.io
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GH_PAT }}      
       - name: Build the Docker image
-        run: docker build . -t ghcr.io/rafaeltovargarrido/k8s:latest
+        run: docker build . -t ghcr.io/${{ github.actor }}/k8s:latest
       - name: Push the Docker image
-        run: docker push ghcr.io/rafaeltovargarrido/k8s:latest
+        run: docker push ghcr.io/${{ github.actor }}/k8s:latest
