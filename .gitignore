@@ -1,0 +1,68 @@
+# Maven target directory
+/target/
+
+# Maven specific files
+*.log
+.mvn/
+!/.mvn/wrapper/maven-wrapper.jar
+**/mvnw
+**/mvnw.cmd
+
+# IntelliJ IDEA project files
+.idea/
+*.iml
+*.iws
+*.ipr
+/out/
+
+# Eclipse project files
+.project
+.classpath
+.settings/
+.springBeans
+
+# NetBeans project files
+/nbproject/
+*.nb-gradle/
+*.nb/
+
+# Visual Studio Code settings
+.vscode/
+
+# Java build output
+*.class
+*.jar
+*.war
+*.ear
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+*.log
+*.out
+*.bak
+*.swp
+*~
+
+# Application properties (sensitive or environment-specific config)
+application.properties
+application.yml
+
+# Coverage reports and test results
+/coverage/
+*.exec
+/target/site/jacoco/
+*.testlog
+/test-output/
+
+# Build artifacts and generated files
+/hs_err_pid*
+/*.jar
+/*.war
+/*.ear
+/*.class
+
+# Exclude specific config files
+.env
