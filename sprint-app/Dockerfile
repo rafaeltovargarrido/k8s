@@ -1,3 +1,4 @@
+LABEL org.opencontainers.image.source https://github.com/rafaeltovargarrido/k8s
 # Use an official OpenJDK as a base image
 FROM openjdk:17-jdk-alpine
 
