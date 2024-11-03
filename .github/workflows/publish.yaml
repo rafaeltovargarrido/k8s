@@ -23,3 +23,9 @@ jobs:
           context: ./react-app/
           push: true
           tags: ghcr.io/${{ github.actor }}/react:latest
+      - name: Build and push Sprint image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./sprint-app
+          push: true
+          tags: ghcr.io/${{ github.actor }}/react:latest          
