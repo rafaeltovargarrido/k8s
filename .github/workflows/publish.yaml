@@ -13,10 +13,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GH_PAT }}      
-      - name: Build the Docker image
-        run: docker build . -t ghcr.io/${{ github.actor }}/k8s:latest
-      - name: Push the Docker image
-        run: docker push ghcr.io/${{ github.actor }}/k8s:latest
       - name: Build and push React image
         uses: docker/build-push-action@v6
         with:
@@ -28,4 +24,4 @@ jobs:
         with:
           context: ./sprint-app
           push: true
-          tags: ghcr.io/${{ github.actor }}/react:latest          
+          tags: ghcr.io/${{ github.actor }}/sprint:latest          
