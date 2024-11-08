@@ -1,6 +1,7 @@
-LABEL org.opencontainers.image.source https://github.com/rafaeltovargarrido/k8s
 # Use an official Node.js image as the base
 FROM node:16-alpine
+
+LABEL org.opencontainers.image.source https://github.com/rafaeltovargarrido/k8s
 
 # Set the working directory
 WORKDIR /app
