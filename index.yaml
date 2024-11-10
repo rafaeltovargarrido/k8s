@@ -3,7 +3,7 @@ entries:
   curso-chart:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-11T00:22:52.758759511+01:00"
+    created: "2024-11-11T00:26:30.688286046+01:00"
     description: A Helm chart for k8s
     digest: 4efa30b11951c5a29e878a03dd33f3c6c3954b696e6be8c8939844fc7cdd81c0
     name: curso-chart
@@ -11,4 +11,4 @@ entries:
     urls:
     - https://rafaeltovargarrido.github.io/k8s/charts/curso-chart-0.3.0.tgz
     version: 0.3.0
-generated: "2024-11-11T00:22:52.758466526+01:00"
+generated: "2024-11-11T00:26:30.687951708+01:00"
