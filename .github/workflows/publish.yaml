@@ -25,3 +25,9 @@ jobs:
           context: ./sprint-app
           push: true
           tags: ghcr.io/${{ github.actor }}/sprint:latest          
+      - name: Build and push Python image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./python-app
+          push: true
+          tags: ghcr.io/${{ github.actor }}/python:latest                    
