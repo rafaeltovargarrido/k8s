@@ -67,3 +67,9 @@ kubectl logs [POD_NAME]
 ```bash
 
 ```
+
+
+
+helm repo index charts/ --url https://rafaeltovargarrido.github.io/k8s/charts
+
+helm package ./charts/nginx -d charts/
