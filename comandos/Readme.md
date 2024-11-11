@@ -62,14 +62,57 @@ k9s
 ```bash
 kubectl logs [POD_NAME]
 ```
-### Commando 9: .
+### Commando 9: Port Forward de un service.
 
 ```bash
+kubectl port-forward svc/httpbin 8080:80
+```
 
+### Commando 10: Port Forward de un service.
+
+```bash
+kubectl port-forward svc/httpbin 8080:80
+```
+
+### Commando 11: Agregar redis repo antiguamente.
+
+```bash
+helm repo add bitnami https://charts.bitnami.com/bitnami
+```
+
+### Commando 12: Instalar chart.
+
+```bash
+helm install my-redis bitnami/redis
+```
+
+### Commando 13: Ver versiones disponibles for one repo.
+
+```bash
+helm search repo bitnami/redis -l
+```
+
+### Commando 14: Actualizar parametros de instalación con archivo.
+
+```bash
+helm upgrade my-redis bitnami/redis -f ./manifiestos/c1/redis_values.yaml
+```
+
+### Commando 15: Actualizar parametros de instalación cpor parametros.
+
+```bash
+helm upgrade my-redis bitnami/redis --set auth.enabled=false
 ```
 
 
+### Commando 16: Pasos para generar version de repo helm.
+
+```bash
+helm package ./charts/nginx -d charts/
 
 helm repo index charts/ --url https://rafaeltovargarrido.github.io/k8s/charts
 
-helm package ./charts/nginx -d charts/
+helm repo add nginx-tmp  https://rafaeltovargarrido.github.io/k8s/
+
+helm  upgrade nginx nginx-tmp/curso-chart
+```
