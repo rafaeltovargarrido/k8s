@@ -64,5 +64,3 @@ application.yml
 /*.ear
 /*.class
 
-# Exclude specific config files
-.env
