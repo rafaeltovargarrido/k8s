@@ -21,7 +21,7 @@ class HelloController {
     public String home() {
         return "Hello Docker World 4";
     }
-    @CrossOrigin(origins = "http://localhost:3000")
+    //@CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/hi")
     public String hi() {
         return "hi";
