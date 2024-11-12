@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND; 
+console.log("Backend URL:", BACKEND_URL);
 
 function App() {
   const [response, setResponse] = useState(''); // State to hold response from backend
