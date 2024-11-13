@@ -3,7 +3,7 @@ entries:
   curso-chart:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-12T20:24:30.810464029+01:00"
+    created: "2024-11-13T10:38:43.588756142+01:00"
     description: A Helm chart for k8s v2
     digest: a8e2ce21bb66e9af67879dd206e8cb72d55b1dea3684cbb813820fbb0e88e130
     name: curso-chart
@@ -13,7 +13,7 @@ entries:
     version: 0.3.3
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-12T20:24:30.810265028+01:00"
+    created: "2024-11-13T10:38:43.588531339+01:00"
     description: A Helm chart for k8s
     digest: bba9a29f711e4df9e1b2f65d8a9acab32318e2319f3caf895c1275cc48e16b56
     name: curso-chart
@@ -23,7 +23,7 @@ entries:
     version: 0.3.2
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-12T20:24:30.809997419+01:00"
+    created: "2024-11-13T10:38:43.588310178+01:00"
     description: A Helm chart for k8s
     digest: e6dc74424d47dfd79a2bbddfa9c41d49892485a0c48fadc18e62096a8c4cda74
     name: curso-chart
@@ -33,7 +33,7 @@ entries:
     version: 0.3.1
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-12T20:24:30.809709916+01:00"
+    created: "2024-11-13T10:38:43.588061617+01:00"
     description: A Helm chart for k8s
     digest: 821a6e9e93f3594d84be46311d4a351596bbaf8fe65659db2600ca5a09314e74
     name: curso-chart
@@ -41,4 +41,15 @@ entries:
     urls:
     - https://rafaeltovargarrido.github.io/k8s/charts/curso-chart-0.3.0.tgz
     version: 0.3.0
-generated: "2024-11-12T20:24:30.809325108+01:00"
+  poc:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2024-11-13T10:38:43.588971618+01:00"
+    description: A Helm chart for Kubernetes Poc
+    digest: 76a9b22956fb3233e6e25cfd86dd8583a24b6cbe536d4829596e808969f5ef41
+    name: poc
+    type: application
+    urls:
+    - https://rafaeltovargarrido.github.io/k8s/charts/poc-0.1.0.tgz
+    version: 0.1.0
+generated: "2024-11-13T10:38:43.587729168+01:00"

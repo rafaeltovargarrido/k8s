@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: react
+  labels:
+    app: react
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: react
+  template:
+    metadata:
+      labels:
+        app: react
+    spec:
+      volumes:
+        - name: nginx-config-volume
+          configMap:
+            name: nginx-config    
+      containers:
+        - name: react
+          volumeMounts:
+            - name: nginx-config-volume
+              mountPath: /etc/nginx/conf.d/default.conf  # Override default Nginx config
+              subPath: nginx.conf        
+          image: ghcr.io/rafaeltovargarrido/react:latest
+          ports:
+            - containerPort: 80       
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sprint
+  labels:
+    app: sprint
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sprint
+  template:
+    metadata:
+      labels:
+        app: sprint
+    spec:
+      containers:
+        - name: sprint
+          image: ghcr.io/rafaeltovargarrido/sprint:latest
+          ports:
+            - containerPort: 8080            
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: sprint
+spec:
+  type: ClusterIP
+  selector:
+    app: sprint
+  ports:
+  - port: 8080
+    targetPort: 8080
+---
+
+# Please edit the object below. Lines beginning with a '#' will be ignored,
+# and an empty file will abort the edit. If an error occurs while saving this file will be
+# reopened with the relevant failures.
+#
+apiVersion: v1
+data:
+  nginx.conf: |-
+    server {
+        listen 80;
+
+        location / {
+            root /usr/share/nginx/html;
+            try_files $uri /index.html;
+        }
+
+        location /api {
+            rewrite ^/api/(.*) /$1 break;
+            proxy_pass http://sprint:8080;  # Forward /api requests to backend
+        }
+    }
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: default
