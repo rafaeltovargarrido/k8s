@@ -2,15 +2,13 @@ import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND; 
-console.log("Backend URL:", BACKEND_URL);
 
 function App() {
   const [response, setResponse] = useState(''); // State to hold response from backend
 
   // Function to fetch greeting from the backend
   const fetchGreeting = () => {
-    fetch(`${BACKEND_URL}/hi`)
+    fetch('/api/hi')
         .then((res) => res.text())
       .then((data) => {
         console.log(data); // Log response to console
