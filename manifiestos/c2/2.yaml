@@ -1,0 +1,12 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: time-job
+spec:
+  template:
+    spec:
+      containers:
+      - name: time-container
+        image: busybox
+        command: ["sh", "-c", "date; sleep 10"]
+      restartPolicy: Never

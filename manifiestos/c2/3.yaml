@@ -1,0 +1,15 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: httpbin-cronjob
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: httpbin-container
+            image: curlimages/curl
+            command: ["curl", "https://httpbin.org/"]
+          restartPolicy: OnFailure
