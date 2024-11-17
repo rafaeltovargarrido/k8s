@@ -18,15 +18,26 @@ spec:
         - name: nginx-config-volume
           configMap:
             name: nginx-config    
+        - name: shared-storage
+          persistentVolumeClaim:
+            claimName: shared-pvc            
       containers:
         - name: react
           volumeMounts:
             - name: nginx-config-volume
               mountPath: /etc/nginx/conf.d/default.conf  # Override default Nginx config
               subPath: nginx.conf        
+            - mountPath: /home  # Path inside the container
+              name: shared-storage              
           image: ghcr.io/rafaeltovargarrido/react:latest
           ports:
-            - containerPort: 80       
+            - containerPort: 80                 
+          env:
+            - name: REDIS_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: redis
+                  key: host 
 ---
 ---
 
@@ -62,7 +73,14 @@ spec:
         - name: sprint
           image: ghcr.io/rafaeltovargarrido/sprint:latest
           ports:
-            - containerPort: 8080            
+            - containerPort: 8080       
+          volumeMounts:
+          - mountPath: /home  # Path inside the container
+            name: shared-storage
+      volumes:
+      - name: shared-storage
+        persistentVolumeClaim:
+          claimName: shared-pvc
 ---
 
 apiVersion: v1
@@ -102,3 +120,36 @@ kind: ConfigMap
 metadata:
   name: nginx-config
   namespace: default
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: redis
+  namespace: default
+stringData:
+  host: redis.redis.svc.cluster.local
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: shared-pv
+spec:
+  capacity:
+    storage: 2Gi  # Size of the storage
+  accessModes:
+    - ReadWriteMany  # Allows multiple pods to read and write
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/data/shared-files  # Directory on Minikube's host machine
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: shared-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
