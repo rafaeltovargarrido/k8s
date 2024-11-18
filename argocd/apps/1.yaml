@@ -5,12 +5,20 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
-    chart: redis
-    repoURL: https://charts.bitnami.com/bitnami
-    targetRevision: 20.3.0
-    helm:
-      releaseName: redis
+  sources:
+    - chart: redis
+      repoURL: registry-1.docker.io/bitnamicharts
+      targetRevision: 20.3.0
+      helm:
+        releaseName: redis
+        parameters:
+        - name: "auth.existingSecret"
+          value: prod-redis-secret      
+        #values: |
+        #  auth:
+        #    existingSecret: prod-redis-secret      
+    - repoURL: https://github.com/rafaeltovargarrido/k8s
+      path: argocd/apps/k8s/
   destination:
     server: "https://kubernetes.default.svc"
     namespace: default
