@@ -19,6 +19,7 @@ spec:
         #    existingSecret: prod-redis-secret      
     - repoURL: https://github.com/rafaeltovargarrido/k8s
       path: argocd/apps/k8s/
+      targetRevision: HEAD
   destination:
     server: "https://kubernetes.default.svc"
     namespace: default
