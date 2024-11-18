@@ -61,14 +61,3 @@ jobs:
           context: ./python-app
           push: true
           tags: ghcr.io/${{ github.actor }}/python:latest                    
-
-  deploy:
-    name: Deploy
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions-hub/kubectl@master
-        env:
-          KUBE_CONFIG: ${{ secrets.MINIKUBE_KUBECONFIG }}
-        with:
-          args: get pods -n default        
