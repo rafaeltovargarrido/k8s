@@ -38,6 +38,11 @@
 
 - Conocimientos básicos de Kubernetes
 - Familiaridad con la línea de comandos y configuración de archivos YAML
+- https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
+- https://k9scli.io/topics/install/
+- https://helm.sh/docs/helm/helm_install/
+- https://minikube.sigs.k8s.io/docs/start/?arch=%2Flinux%2Fx86-64%2Fstable%2Fbinary+download
+- sudo apt install redis-tools
 
 ## Instalación de Helm
 
