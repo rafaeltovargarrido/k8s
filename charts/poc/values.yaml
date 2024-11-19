@@ -105,3 +105,5 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+redis:
+  port: 6379
