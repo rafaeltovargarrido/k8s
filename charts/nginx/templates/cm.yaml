@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-nginx-config
+data:
+  nginx.config: |
+    server {
+        listen 80;
+
+        location / {
+            root /usr/share/nginx/html;
+            try_files $uri /index.html;
+        }
+
+        location /api {
+            rewrite ^/api/(.*) /$1 break;
+            proxy_pass http://{{ .Values.backend.host | default "localhost" }}:{{ .Values.backend.port | default 8080 }};
+
+        }
+    }
