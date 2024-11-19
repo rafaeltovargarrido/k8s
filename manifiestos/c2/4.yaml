@@ -16,3 +16,26 @@ spec:
                 name: react
                 port:
                   number: 8080
+    - host: httpbin.example
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: httpbin
+                port:
+                  number: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: httpbin
+  namespace: default
+spec:
+  type: ExternalName
+  externalName: httpbin.test-1.svc.cluster.local
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
