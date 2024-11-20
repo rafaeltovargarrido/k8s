@@ -11,5 +11,12 @@ spec:
           containers:
           - name: httpbin-container
             image: curlimages/curl
-            command: ["curl", "https://httpbin.org/"]
+            command: ["curl", "http://sprint/bye", "-v"]
+            resources:
+              limits:
+                memory: "64Mi"
+                cpu: "100m"
+              requests:
+                memory: "64Mi"
+                cpu: "100m" 
           restartPolicy: OnFailure

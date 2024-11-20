@@ -22,6 +22,9 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
+          Hola desde la clase.
+        </p>
+        <p>
           Edit <code>src/App.js</code> and save to reload 3.
         </p>
         <button className="App-button" onClick={fetchGreeting}>

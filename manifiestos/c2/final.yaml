@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sprint
+  labels:
+    app: sprint
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sprint
+  template:
+    metadata:
+      labels:
+        app: sprint
+    spec:          
+      containers:
+        - name: sprint           
+          image: sprint:v2
+          ports:
+            - containerPort: 8181
+              name: http-sprint
+          resources:
+            limits:
+              memory: "64Mi"
+              cpu: "100m"
+            requests:
+              memory: "64Mi"
+              cpu: "100m"               
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sprint
+spec:
+  type: ClusterIP
+  selector:
+    app: sprint
+  ports:
+  - port: 80
+    targetPort: http-sprint
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress
+  namespace: default
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: react.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: react
+                port:
+                  number: 8080                
+---
