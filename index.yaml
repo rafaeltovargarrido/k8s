@@ -3,7 +3,17 @@ entries:
   react-app:
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-22T09:37:52.384520847+01:00"
+    created: "2024-11-22T10:03:50.176297952+01:00"
+    description: Este chart esta dedicado a la administracion de la app react
+    digest: 8d37757fa9ed64c0a103f6329b1b74f3972f755d48d0582607544c218e2c8a95
+    name: react-app
+    type: application
+    urls:
+    - https://rafaeltovargarrido.github.io/k8s/charts/react-app-0.0.2.tgz
+    version: 0.0.2
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2024-11-22T10:03:50.176033456+01:00"
     description: Este chart esta dedicado a la administracion de la app react
     digest: 07459804f5f3b844b10e5fd87b32a422baa637d4320e30cd35aac08e9639398a
     name: react-app
@@ -11,4 +21,4 @@ entries:
     urls:
     - https://rafaeltovargarrido.github.io/k8s/charts/react-app-0.0.1.tgz
     version: 0.0.1
-generated: "2024-11-22T09:37:52.384191024+01:00"
+generated: "2024-11-22T10:03:50.175663086+01:00"
