@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: react
-  namespace: istio-apps
+  namespace: default
   labels:
     app: react
 spec:
@@ -34,7 +34,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: react
-  namespace: istio-apps
+  namespace: default
 spec:
   type: ClusterIP
   selector:
@@ -47,7 +47,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: sprint
-  namespace: istio-apps
+  namespace: default
   labels:
     app: sprint
 spec:
@@ -71,7 +71,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: sprint
-  namespace: istio-apps
+  namespace: default
 spec:
   type: ClusterIP
   selector:
@@ -118,5 +118,5 @@ data:
 kind: ConfigMap
 metadata:
   name: nginx-config
-  namespace: istio-apps
+  namespace: default
 ---                  

@@ -102,7 +102,7 @@ backend:
     tag: ""  
   host: sprint
   port: 80
-  port_sprint: 8080
+  port_sprint: 8181
   name_port: http-sprint
   labels:
     app: sprint

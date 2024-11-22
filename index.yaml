@@ -3,9 +3,9 @@ entries:
   curso-apps:
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-22T20:31:25.182146669+01:00"
+    created: "2024-11-22T20:53:05.869310492+01:00"
     description: Este chart esta dedicado a la administracion de la app react
-    digest: f642afaa910087a011684d30cb114c81035e1c652a8195a4e19312549949d623
+    digest: f284034500b498a047252abfc60071423448e2b1384004214fd73d5c58460732
     name: curso-apps
     type: application
     urls:
@@ -13,7 +13,7 @@ entries:
     version: 0.0.3
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-22T20:31:25.18187647+01:00"
+    created: "2024-11-22T20:53:05.869055527+01:00"
     description: Este chart esta dedicado a la administracion de la app react
     digest: 9f68c8ceb3dd308ad0bcc16ea727d415e44b1287d5994b1deb6538c93492875c
     name: curso-apps
@@ -23,7 +23,7 @@ entries:
     version: 0.0.2
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-22T20:31:25.181581246+01:00"
+    created: "2024-11-22T20:53:05.868825056+01:00"
     description: Este chart esta dedicado a la administracion de la app react
     digest: 372b94524cf003d85a3d62f50c7b72e8eb5634b484124f8d27076eb8c3bd3bdb
     name: curso-apps
@@ -31,4 +31,4 @@ entries:
     urls:
     - https://rafaeltovargarrido.github.io/k8s/charts/curso-apps-0.0.1.tgz
     version: 0.0.1
-generated: "2024-11-22T20:31:25.180584763+01:00"
+generated: "2024-11-22T20:53:05.86847565+01:00"
