@@ -10,13 +10,13 @@ spec:
   selector:
     matchLabels:
     {{- with .Values.backend.labels }}
-      {{- toYaml . | nindent 4 }}
+      {{- toYaml . | nindent 8 }}
     {{- end }}   
   template:
     metadata:
       labels:
         {{- with .Values.backend.labels }}
-          {{- toYaml . | nindent 4 }}
+          {{- toYaml . | nindent 8 }}
         {{- end }}  
     spec:
       {{- with .Values.imagePullSecrets }}
