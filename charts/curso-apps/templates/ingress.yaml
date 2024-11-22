@@ -13,6 +13,6 @@ spec:
             pathType: {{ .Values.ingress.pathType | default "Prefix" }}
             backend:
               service:
-                name: {{ .Values.service.name | default "react" }}
+                name: {{ include "react-app.fullname" . | default "react" }}
                 port:
                   number: {{ .Values.service.port | default 80 }}
