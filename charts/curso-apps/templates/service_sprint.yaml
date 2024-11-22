@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.backend.host | default "sprint" }}
+  labels:
+    {{- with .Values.backend.labels }}
+      {{- toYaml . | nindent 6 }}
+    {{- end }}   
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.backend.port }}
+      targetPort: {{ .Values.backend.name_port }}
+      protocol: TCP
+      name: http
+  selector:
+      {{- with .Values.backend.labels }}
+        {{- toYaml . | nindent 6 }}
+      {{- end }}   

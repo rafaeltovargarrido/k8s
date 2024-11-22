@@ -1,24 +1,14 @@
 apiVersion: v1
 entries:
-  react-app:
+  curso-apps:
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-22T10:03:50.176297952+01:00"
+    created: "2024-11-22T19:41:15.943497711+01:00"
     description: Este chart esta dedicado a la administracion de la app react
-    digest: 8d37757fa9ed64c0a103f6329b1b74f3972f755d48d0582607544c218e2c8a95
-    name: react-app
+    digest: 372b94524cf003d85a3d62f50c7b72e8eb5634b484124f8d27076eb8c3bd3bdb
+    name: curso-apps
     type: application
     urls:
-    - https://rafaeltovargarrido.github.io/k8s/charts/react-app-0.0.2.tgz
-    version: 0.0.2
-  - apiVersion: v2
-    appVersion: 0.0.1
-    created: "2024-11-22T10:03:50.176033456+01:00"
-    description: Este chart esta dedicado a la administracion de la app react
-    digest: 07459804f5f3b844b10e5fd87b32a422baa637d4320e30cd35aac08e9639398a
-    name: react-app
-    type: application
-    urls:
-    - https://rafaeltovargarrido.github.io/k8s/charts/react-app-0.0.1.tgz
+    - https://rafaeltovargarrido.github.io/k8s/charts/curso-apps-0.0.1.tgz
     version: 0.0.1
-generated: "2024-11-22T10:03:50.175663086+01:00"
+generated: "2024-11-22T19:41:15.942700444+01:00"

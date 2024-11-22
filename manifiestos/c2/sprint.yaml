@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sprint
+  labels:
+    app: sprint
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sprint
+  template:
+    metadata:
+      labels:
+        app: sprint
+    spec:          
+      containers:
+        - name: sprint           
+          image: ghcr.io/rafaeltovargarrido/sprint:latest
+          ports:
+            - containerPort: 8181
+              name: http-sprint           
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sprint
+spec:
+  type: ClusterIP
+  selector:
+    app: sprint
+  ports:
+  - port: 80
+    targetPort: http-sprint

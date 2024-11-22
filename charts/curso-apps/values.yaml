@@ -111,5 +111,14 @@ tolerations: []
 affinity: {}
 
 backend:
+  image:
+    repository: sprint
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""  
   host: sprint
   port: 80
+  port_sprint: 8080
+  name_port: http-sprint
+  labels:
+    app: sprint
