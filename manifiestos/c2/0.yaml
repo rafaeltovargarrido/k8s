@@ -24,6 +24,7 @@ spec:
           image: ghcr.io/rafaeltovargarrido/react:latest
           ports:
             - containerPort: 80
+              name: http-react
           volumeMounts:
             - name: nginx-config-volume
               mountPath: /etc/nginx/conf.d/default.conf
@@ -40,7 +41,7 @@ spec:
     app: react
   ports:
   - port: 8080
-    targetPort: 80
+    targetPort: http-react
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -111,7 +112,7 @@ data:
 
         location /api {
             rewrite ^/api/(.*) /$1 break;
-            proxy_pass http://sprint;  # Forward /api requests to backend
+            proxy_pass http://sprint;
         }
     }
 kind: ConfigMap
