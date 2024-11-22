@@ -31,4 +31,8 @@ class HelloController {
     public String bye() {
         return "bye";
     }       
+    @GetMapping("/code")
+    public String code() {
+        throw new RuntimeException("Error");
+    }          
 }

@@ -2,8 +2,12 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: time-job
+  namespace: istio-apps
 spec:
   template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
     spec:
       containers:
       - name: time-container
