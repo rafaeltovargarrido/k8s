@@ -1,0 +1,186 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: react
+spec:
+  replicas: 2
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: react
+  template:
+    metadata:
+      labels:
+        app: react
+    spec: 
+      volumes:
+        - name: nginx-config-volume
+          configMap:
+            name: nginx-config             
+      containers:
+        - name: react           
+          image: react:amarillo
+          ports:
+            - containerPort: 80
+              name: http-react
+          volumeMounts:
+            - name: nginx-config-volume
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: nginx.conf 
+  strategy:
+    blueGreen: 
+      # activeService specifies the service to update with the new template hash at time of promotion.
+      # This field is mandatory for the blueGreen update strategy.
+      activeService: react-stable
+      # previewService specifies the service to update with the new template hash before promotion.
+      # This allows the preview stack to be reachable without serving production traffic.
+      # This field is optional.
+      previewService: react-canary
+      # autoPromotionEnabled disables automated promotion of the new stack by pausing the rollout
+      # immediately before the promotion. If omitted, the default behavior is to promote the new
+      # stack as soon as the ReplicaSet are completely ready/available.
+      # Rollouts can be resumed using: `kubectl argo rollouts promote ROLLOUT`
+      autoPromotionEnabled: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: react-canary
+  namespace: default
+spec:
+  type: ClusterIP
+  selector:
+    app: react
+  ports:
+  - port: 8080
+    targetPort: http-react
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: react-stable
+  namespace: default
+spec:
+  type: ClusterIP
+  selector:
+    app: react
+  ports:
+  - port: 8080
+    targetPort: http-react
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sprint
+  namespace: default
+  labels:
+    app: sprint
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sprint
+  template:
+    metadata:
+      labels:
+        app: sprint
+    spec:          
+      containers:
+        - name: sprint           
+          image: ghcr.io/rafaeltovargarrido/sprint:latest
+          ports:
+            - containerPort: 8181
+              name: http-sprint           
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sprint
+  namespace: default
+spec:
+  type: ClusterIP
+  selector:
+    app: sprint
+  ports:
+  - port: 80
+    targetPort: http-sprint
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress
+  namespace: istio-system
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: react.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ingress-gateway
+                port:
+                  number: 80                
+---
+apiVersion: v1
+data:
+  nginx.conf: |-
+    server {
+        listen 80;
+
+        location / {
+            root /usr/share/nginx/html;
+            try_files $uri /index.html;
+        }
+
+        location /api {
+            rewrite ^/api/(.*) /$1 break;
+            proxy_pass http://sprint;
+        }
+    }
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: default
+---                  
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: rollout-vsvc
+spec:
+  gateways:
+  - gateway
+  hosts:
+  - react.local
+  http:
+  - name: primary        # referenced in canary.trafficRouting.istio.virtualService.routes
+    route:
+    - destination:
+        host: react-stable # referenced in canary.stableService
+        port:
+          number: 8080
+      weight: 100
+    - destination:
+        host: react-canary # referenced in canary.canaryService
+        port:
+          number: 8080        
+      weight: 0
+---
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: gateway
+spec:
+  # The selector matches the ingress gateway pod labels.
+  # If you installed Istio using Helm following the standard documentation, this would be "istio=ingress"
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "react.local"
