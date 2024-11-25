@@ -51,5 +51,9 @@ spec:
     server: "https://kubernetes.default.svc"
     namespace: redis    
   syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true  
     syncOptions:
     - CreateNamespace=true  
+    - ApplyOutOfSyncOnly=true
