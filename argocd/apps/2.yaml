@@ -1,0 +1,55 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: curso-apps
+  namespace: default
+spec:
+  project: default
+  sources:
+    - chart: curso-apps
+      repoURL: https://rafaeltovargarrido.github.io/k8s/charts
+      targetRevision: 0.0.3
+      helm:
+        releaseName: curso-apps
+        parameters:
+        - name: "image.repository"
+          value: ghcr.io/rafaeltovargarrido/react      
+        - name: "image.tag"
+          value: latest      
+        - name: "backend.image.repository"
+          value: ghcr.io/rafaeltovargarrido/sprint                          
+        - name: "backend.image.tag"
+          value: latest
+        - name: "backend.port_sprint"
+          value: "8181"       
+        - name: "redis.host"
+          value: "redis-master.redis"                   
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: default
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: redis
+  namespace: default
+spec:
+  project: default
+  sources:
+    - chart: redis
+      repoURL: registry-1.docker.io/bitnamicharts
+      targetRevision: 20.3.0
+      helm:
+        releaseName: redis
+        parameters:
+        - name: "auth.enabled"
+          value: "false"
+        - name: "namespaceOverride"
+          value: redis
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: redis    
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true  

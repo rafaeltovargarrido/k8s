@@ -112,3 +112,6 @@ ingress:
   host: react.local
   path: /
   pathType: Prefix    
+
+redis:
+  host: redis  

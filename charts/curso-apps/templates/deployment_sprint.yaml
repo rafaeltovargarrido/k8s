@@ -36,3 +36,6 @@ spec:
             - name: {{ .Values.backend.name_port | default "http" }}
               containerPort: {{ .Values.backend.port_sprint | default 8080 }}
               protocol: TCP
+          env:
+            - name: REDIS_HOST
+              value: {{ .Values.redis.host | default "localhost" }}              

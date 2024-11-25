@@ -19,7 +19,7 @@ spec:
             name: nginx-config             
       containers:
         - name: react           
-          image: react:amarillo
+          image: react:rojo
           ports:
             - containerPort: 80
               name: http-react
