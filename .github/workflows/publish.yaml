@@ -77,5 +77,13 @@ jobs:
         uses: aquasecurity/trivy-action@0.29.0
         with:
           image-ref: 'nginx:1.16'
-          format: 'table'  
+          format: 'github' 
+          output: 'dependency-results.sbom.json'
           cache-dir: './trivy-cache'
+          github-pat: ${{ secrets.GH_PAT }}
+      - name: Upload trivy report as a Github artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-sbom-report
+          path: '${{ github.workspace }}/dependency-results.sbom.json'
+          retention-days: 20 # 90 is the default
