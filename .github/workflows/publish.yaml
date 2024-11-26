@@ -77,8 +77,8 @@ jobs:
         uses: aquasecurity/trivy-action@0.29.0
         with:
           image-ref: 'nginx:1.16'
-          format: 'github' 
-          output: 'dependency-results.sbom.json'
+          format: 'table' 
+          output: 'vulnerability-results.txt'
           cache-dir: './trivy-cache'
           github-pat: ${{ secrets.GH_PAT }}
           severity: HIGH,CRITICAL
@@ -87,5 +87,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: trivy-sbom-report
-          path: '${{ github.workspace }}/dependency-results.sbom.json'
+          path: '${{ github.workspace }}/vulnerability-results.txt'
           retention-days: 20 # 90 is the default
