@@ -73,3 +73,4 @@ jobs:
         with:
           image-ref: 'nginx:1.16'
           format: 'table'  
+          cache-dir: './trivy-cache'
