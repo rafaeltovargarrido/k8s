@@ -61,3 +61,15 @@ jobs:
           context: ./python-app
           push: true
           tags: ghcr.io/${{ github.actor }}/python:latest                    
+  
+  validar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: 'nginx:1.16'
+          format: 'table'  

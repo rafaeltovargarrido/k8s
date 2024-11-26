@@ -1,0 +1,80 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: get-pods-cron
+spec:
+  schedule: "*/5 * * * *"  # Runs every 5 minutes
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: kubectl
+              image: bitnami/kubectl:latest  # Uses a lightweight image with kubectl
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  kubectl get pods -A > /output/pods-$(date +%Y%m%d%H%M%S).txt
+              env:
+                - name: KUBECONFIG
+                  value: /root/.kube/config
+              volumeMounts:
+                - name: kubeconfig
+                  mountPath: /root/.kube
+                - name: output
+                  mountPath: /output
+          restartPolicy: OnFailure
+          volumes:
+            - name: kubeconfig
+              hostPath:
+                path: /root/.kube  # Ensure this points to your kubeconfig file
+            - name: output
+              hostPath:
+                path: /tmp/k8s-cron-output  # Folder to store output files
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: get-pods-role
+  namespace: default  # Replace with the namespace where you want the permissions
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: get-pods-rolebinding
+  namespace: default  # Same namespace as the Role
+subjects:
+  - kind: ServiceAccount
+    name: get-pods-sa  # Name of the ServiceAccount
+    namespace: default
+roleRef:
+  kind: Role
+  name: get-pods-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: get-pods-clusterrole
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: get-pods-clusterrolebinding
+subjects:
+  - kind: ServiceAccount
+    name: get-pods-sa  # Name of the ServiceAccount
+    namespace: default
+roleRef:
+  kind: ClusterRole
+  name: get-pods-clusterrole
+  apiGroup: rbac.authorization.k8s.io

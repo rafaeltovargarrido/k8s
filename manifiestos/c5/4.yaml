@@ -1,0 +1,20 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: selfsigned-cluster-issuer
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: react-local-cert
+  namespace: default
+spec:
+  secretName: react-local-tls  # The secret to store the generated certificate
+  commonName: react.local
+  dnsNames:
+    - react.local
+  issuerRef:
+    name: selfsigned-cluster-issuer
+    kind: ClusterIssuer

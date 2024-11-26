@@ -1,0 +1,65 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8srequiredhttplabelports
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sRequiredHttpLabelPorts
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            prefix:
+              type: string
+            pattern:
+              type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8srequiredhttplabelports
+
+        violation[{"msg": msg, "details": {"invalid_ports": invalid_ports}}] {
+          # Obtenemos los contenedores definidos en el Pod
+          containers := input.review.object.spec.containers[_]
+
+          # Buscamos todos los puertos que no cumplen el patrón
+          invalid_ports := [port | port := containers.ports[_].name; not port_matches(port)]
+
+          # Validamos si hay algún puerto inválido
+          count(invalid_ports) > 0
+          msg := sprintf("All port names must match the pattern '%s'. Invalid ports: %v", [input.parameters.pattern, invalid_ports])
+        }
+
+        # Función que valida si un puerto cumple con el patrón definido
+        port_matches(port) {
+          pattern := input.parameters.pattern
+          startswith(port, input.parameters.prefix)
+          regex.match(pattern, port)
+        }
+---
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sRequiredHttpLabelPorts
+metadata:
+  name: validate-pod-port-names
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+  parameters:
+    prefix: "http-"
+    pattern: "^http-[0-9]{3}$"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: invalid-pod
+spec:
+  containers:
+    - name: test-container
+      image: nginx
+      ports:
+        - name: invalid-port
+          containerPort: 8080
