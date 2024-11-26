@@ -74,7 +74,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GH_PAT }} 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@0.29.0
         with:
           image-ref: 'nginx:1.16'
           format: 'table'  
