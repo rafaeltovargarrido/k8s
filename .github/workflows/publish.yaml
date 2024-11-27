@@ -76,7 +76,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.29.0
         with:
-          image-ref: 'nginx:1.16'
+          image-ref: 'nginx:1.16.1-alpine-perl'
           format: 'table' 
           output: 'vulnerability-results.txt'
           cache-dir: './trivy-cache'
