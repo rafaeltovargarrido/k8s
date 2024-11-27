@@ -2,11 +2,12 @@ apiVersion: constraints.gatekeeper.sh/v1beta1
 kind: K8sRequiredLabels
 metadata:
   name: ns-must-have-gk
+  namespace: default
 spec:
   match:
     kinds:
       - apiGroups: [""]
-        kinds: ["Namespace"]
+        kinds: ["Namespace", "Pod"]
   parameters:
     labels:
       - "entorno"

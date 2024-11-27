@@ -32,6 +32,8 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}          
           ports:
             - name: {{ .Values.backend.name_port | default "http" }}
               containerPort: {{ .Values.backend.port_sprint | default 8080 }}

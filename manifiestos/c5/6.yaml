@@ -1,0 +1,123 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpbin-2
+  namespace: dev
+  labels:
+    app: httpbin
+    version: httpbin-v3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: httpbin
+  template:
+    metadata:
+      labels:
+        app: httpbin
+    spec:
+      serviceAccountName: sa-test
+      containers:
+        - name: httpbin
+          resources:
+            requests:
+              memory: "1.5Gi"  # Excede el límite de memoria definido en la ResourceQuota
+              cpu: "1"
+            limits:
+              memory: "1.5Gi"
+              cpu: "1"                
+          image: kennethreitz/httpbin 
+          args: ["gunicorn", "-b", "0.0.0.0:80", "httpbin:app", "--log-level", "debug"]          
+          ports:
+            - containerPort: 80  
+          envFrom:
+            - secretRef:
+                name: secreto2
+            - configMapRef:
+                name: cm                
+          env:
+            - name: SECRETO
+              valueFrom:
+                secretKeyRef:
+                  name: secreto
+                  key:  password
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpbin
+  namespace: dev
+  labels:
+    app: httpbin
+    version: httpbin-v3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: httpbin
+  template:
+    metadata:
+      labels:
+        app: httpbin
+    spec:
+      serviceAccountName: sa-test
+      containers:
+        - name: httpbin
+          resources:
+            requests:
+              memory: "1.5Gi"  # Excede el límite de memoria definido en la ResourceQuota
+              cpu: "1"
+            limits:
+              memory: "1.5Gi"
+              cpu: "1"                
+          image: kennethreitz/httpbin 
+          args: ["gunicorn", "-b", "0.0.0.0:80", "httpbin:app", "--log-level", "debug"]          
+          ports:
+            - containerPort: 80  
+          envFrom:
+            - secretRef:
+                name: secreto2
+            - configMapRef:
+                name: cm                
+          env:
+            - name: SECRETO
+              valueFrom:
+                secretKeyRef:
+                  name: secreto
+                  key:  password
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: secreto
+type: Opaque
+data:
+  password: aG9sYQ==
+  password2: aG9sYQ==
+  password3: aG9sYQ==
+  password4: aG9sYQ==
+  password5: aG9sYQ==
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: secreto2
+type: Opaque
+data:
+  DB_USER: dXNlcg==
+  DB_DB: dXNlckRC
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cm
+data:
+  key: valueNew
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: sa-test
+  namespace: default
+---

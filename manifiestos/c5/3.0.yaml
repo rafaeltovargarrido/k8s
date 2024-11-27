@@ -1,0 +1,78 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: get-pods-cron
+  namespace: default
+#cronjob.spec.jobTemplate.spec.template.spec.serviceAccount
+spec:
+  schedule: "*/5 * * * *"  # Runs every 5 minutes
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: sa-pods
+          restartPolicy: Never
+          containers:
+            - name: kubectl
+              image: bitnami/kubectl:latest  # Uses a lightweight image with kubectl
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  kubectl run web --namespace=default --image=nginx --labels="app=web" --expose --port=80
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: sa-pods
+  namespace: default
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: get-pods-clusterrole
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: get-pods-clusterrolebinding
+subjects:
+  - kind: ServiceAccount
+    name: sa-pods  # Name of the ServiceAccount
+    namespace: default
+roleRef:
+  kind: ClusterRole
+  name: get-pods-clusterrole
+  apiGroup: rbac.authorization.k8s.io
+
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: get-pods-role
+  namespace: default  # Replace with the namespace where you want the permissions
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["list"]
+---    
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: get-pods-rolebinding
+  namespace: default  # Same namespace as the Role
+subjects:
+  - kind: ServiceAccount
+    name: sa-pods  # Name of the ServiceAccount
+    namespace: default
+roleRef:
+  kind: Role
+  name: get-pods-role
+  apiGroup: rbac.authorization.k8s.io
+---
