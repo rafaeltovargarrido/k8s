@@ -16,11 +16,6 @@ spec:
         image: registry.k8s.io/hpa-example
         ports:
         - containerPort: 80
-        resources:
-          limits:
-            cpu: 500m
-          requests:
-            cpu: 200m
 ---
 apiVersion: v1
 kind: Service
@@ -42,7 +37,7 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: php-apache
+    name: php-apache-2
   minReplicas: 1
   maxReplicas: 10
   metrics:
@@ -52,3 +47,24 @@ spec:
       target:
         type: Utilization
         averageUtilization: 50
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: php-apache
+spec:
+  targetRef:
+    apiVersion: "apps/v1"
+    kind:       Deployment
+    name:       php-apache
+  updatePolicy:
+    updateMode: "Auto"
+  resourcePolicy:
+    containerPolicies:
+    - containerName: "php-apache"
+      minAllowed:
+        cpu: "10m"
+        memory: "32Mi"
+      maxAllowed:
+        cpu: "100m"
+        memory: "256Mi"
