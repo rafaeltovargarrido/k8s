@@ -3,6 +3,17 @@ entries:
   curso-apps:
   - apiVersion: v2
     appVersion: 0.0.1
+    created: "2024-11-29T10:55:38.769211871Z"
+    description: Este chart esta dedicado a la administracion de la app react, y ahora
+      contiene un HPA y un ScaledObject de KEDA
+    digest: 8cee2db63f32398f305f05d626f06f48ea1c53208b31bd0924b46c406dfa68c4
+    name: curso-apps
+    type: application
+    urls:
+    - curso-apps-0.0.6.tgz
+    version: 0.0.6
+  - apiVersion: v2
+    appVersion: 0.0.1
     created: "2024-11-29T11:46:54.145049948+01:00"
     description: Este chart esta dedicado a la administracion de la app react, y ahora
       contiene un HPA y un ScaledObject de KEDA
@@ -53,4 +64,4 @@ entries:
     urls:
     - https://rafaeltovargarrido.github.io/k8s/charts/curso-apps-0.0.1.tgz
     version: 0.0.1
-generated: "2024-11-29T11:46:54.142460273+01:00"
+generated: "2024-11-29T10:55:38.769236898Z"
