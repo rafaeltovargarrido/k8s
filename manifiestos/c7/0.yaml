@@ -108,7 +108,8 @@ data:
 
         location /images {
             root /; # Host path where images are stored
-            add_header Cache-Control "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0";        
+            add_header Cache-Control "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0";
+            expires -1;
             autoindex off;
         }
 

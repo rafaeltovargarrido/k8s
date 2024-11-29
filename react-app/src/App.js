@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
 function App() {
@@ -21,7 +20,7 @@ function App() {
   const updateBackgroundImage = () => {
     const randomImageUrl = `/images/randimage.png?timestamp=${new Date().getTime()}`;
     console.log("Updating background image to:", randomImageUrl);
-    setBgImage(randomImageUrl); // Update state
+    setBgImage(randomImageUrl); // Update state with the new image URL
   };
 
   // Use useEffect to update the background image on page load
@@ -31,26 +30,16 @@ function App() {
 
   return (
     <div
-      key={bgImage} // Force re-render when bgImage changes
       className="App"
-      style={{
-        backgroundImage: `url(${bgImage})`,
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
-        height: '100vh',
-      }}
     >
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+        <img src={bgImage} className="App-logo" alt="Random Logo" /> {/* Use bgImage here */}
         <p>Hola desde la clase.</p>
         <p>Edit <code>src/App.js</code> and save to reload 3.</p>
         <button className="App-button" onClick={fetchGreeting}>
           Say Hi to the backend
         </button>
         <p>{response}</p>
-        <button className="App-button" onClick={updateBackgroundImage}>
-          Refresh Background Image
-        </button>
       </header>
     </div>
   );
