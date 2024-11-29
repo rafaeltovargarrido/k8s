@@ -33,7 +33,12 @@ function App() {
     <div
       key={bgImage} // Force re-render when bgImage changes
       className="App"
-      style={{ backgroundImage: `url(${bgImage})` }}
+      style={{
+        backgroundImage: `url(${bgImage})`,
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        height: '100vh',
+      }}
     >
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
