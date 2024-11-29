@@ -1,4 +1,4 @@
-from randimage import get_random_image, show_array
+from randimage import get_random_image
 import matplotlib
 
 img_size = (128,128)

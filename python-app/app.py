@@ -1,10 +1,11 @@
-from flask import Flask
-import redis
 import re
 import logging
 import json
 
-
+from flask import Flask, send_file
+from randimage import get_random_image
+import matplotlib.pyplot as plt
+import os
 app = Flask(__name__)
 # Configure structlog to format log entries as JSON
 
@@ -54,12 +55,21 @@ werkzeug_handler.setFormatter(JsonFormatter())
 werkzeug_logger.addHandler(werkzeug_handler)
 
 
-@app.route("/")
-def hello_world():
-    r = redis.Redis(host='redis-master.test.svc.cluster.local', port=6379, db=0)
-    r.set('foo', 'bar')
-    app.logger.info("Home route accessed")
-    return "Hello, World!"
+@app.route("/crear")
+def crear():
+
+    img_size = (128, 128)
+    img = get_random_image(img_size)
+
+    # Save the image temporarily
+    output_dir = "/images"
+    os.makedirs(output_dir, exist_ok=True)
+    output_file = os.path.join(output_dir, "randimage.png")
+    plt.imsave(output_file, img)
+
+    # Serve the image file as a response
+    return send_file(output_file, mimetype='image/png')
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=9090, debug=True)

@@ -73,7 +73,7 @@ spec:
         - name: sprint
           image: ghcr.io/rafaeltovargarrido/sprint:latest
           ports:
-            - containerPort: 8080       
+            - containerPort: 8181       
           volumeMounts:
           - mountPath: /home  # Path inside the container
             name: shared-storage
@@ -93,7 +93,7 @@ spec:
     app: sprint
   ports:
   - port: 8080
-    targetPort: 8080
+    targetPort: 8181
 ---
 
 # Please edit the object below. Lines beginning with a '#' will be ignored,
@@ -153,6 +153,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: shared-pvc
 spec:
+  storageClassName: ""
+  volumeName: shared-pv 
   accessModes:
     - ReadWriteMany
   resources:
@@ -203,3 +205,47 @@ spec:
     volumeMounts:
       - mountPath: /images  # Path inside the container
         name: shared-storage   
+---
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python
+  labels:
+    app: python
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: python
+  template:
+    metadata:
+      labels:
+        app: python
+    spec:
+      containers:
+        - name: python
+          image: ghcr.io/rafaeltovargarrido/python:latest
+          ports:
+            - containerPort: 9090       
+          volumeMounts:
+          - mountPath: /images  # Path inside the container
+            name: shared-storage
+      volumes:
+      - name: shared-storage
+        persistentVolumeClaim:
+          claimName: shared-pvc
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: python
+spec:
+  type: ClusterIP
+  selector:
+    app: python
+  ports:
+  - port: 80
+    targetPort: 9090
+---        
