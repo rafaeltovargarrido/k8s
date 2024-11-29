@@ -23,3 +23,5 @@
 
 2. Si quieres ver como se gestiona el escalado de keda, ejecuta el comando kubectl get scaledobjects.keda.sh para ver
 los triggers cuando esten READY.
+
+3. Parametros se han actualizado.

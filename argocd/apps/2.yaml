@@ -2,13 +2,13 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: curso-apps
-  namespace: default
+  namespace: argocd
 spec:
   project: default
   sources:
     - chart: curso-apps
       repoURL: https://rafaeltovargarrido.github.io/k8s/charts
-      targetRevision: 0.0.3
+      targetRevision: 0.0.4
       helm:
         releaseName: curso-apps
         parameters:
@@ -23,7 +23,9 @@ spec:
         - name: "backend.port_sprint"
           value: "8181"       
         - name: "redis.host"
-          value: "redis-master.redis"                   
+          value: "redis-master.redis"      
+        - name: "namespace"
+          value: "prod"        
   destination:
     server: "https://kubernetes.default.svc"
     namespace: default
@@ -33,7 +35,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: redis
-  namespace: default
+  namespace: argocd
 spec:
   project: default
   sources:

@@ -5,7 +5,7 @@ metadata:
   namespace: prod
 spec:
   scaleTargetRef:
-    name: apps-curso-apps
+    name: {{ include "react-app.fullname" . }}
   maxReplicaCount: 10    
   minReplicaCount: 1
   triggers:
