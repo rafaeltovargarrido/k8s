@@ -20,3 +20,6 @@
   echo "Visit http://127.0.0.1:8080 to use your application"
   kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8080:$CONTAINER_PORT
 {{- end }}
+
+2. Si quieres ver como se gestiona el escalado de keda, ejecuta el comando kubectl get scaledobjects.keda.sh para ver
+los triggers cuando esten READY.

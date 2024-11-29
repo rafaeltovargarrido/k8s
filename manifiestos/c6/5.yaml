@@ -1,0 +1,24 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: react
+  namespace: prod
+spec:
+  scaleTargetRef:
+    name: apps-curso-apps
+    kind: Deployment
+  minReplicaCount: 1
+  maxReplicaCount: 10
+  triggers:
+  - type: cron
+    metadata:
+      # Required
+      timezone: Europe/Madrid
+      start: 0 6 * * 1-5        # At 6:00 AM
+      end: 0 20 * * 1-5         # At 8:00 PM
+      desiredReplicas: "5"
+  - type: cpu
+    metricType: Utilization # Allowed types are 'Utilization' or 'AverageValue'
+    metadata:
+      value: "75"      
+---
