@@ -1,0 +1,30 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  labels:
+    argocd.argoproj.io/instance: curso-apps
+  name: react
+  namespace: prod
+spec:
+  maxReplicaCount: 10
+  minReplicaCount: 1
+  scaleTargetRef:
+    name: curso-apps
+  triggers:
+    - metadata:
+        desiredReplicas: '2'
+        end: 0 20 * * 1-5
+        start: 0 6 * * 1-5
+        timezone: Europe/Madrid
+      type: cron
+    - metadata:
+        query: >-
+          sum(rate(istio_requests_total{destination_service_name="apps-curso-apps",
+          response_code="200"}[1m]))
+        serverAddress: http://prometheus.istio-system:9090
+        threshold: '2'
+      type: prometheus
+    - metadata:
+        value: '75'
+      metricType: Utilization
+      type: cpu

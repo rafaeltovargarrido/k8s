@@ -25,3 +25,5 @@
 los triggers cuando esten READY.
 
 3. Parametros se han actualizado.
+
+4. Todos los recursos de k8s estan desplegados en el ns: {{ .Values.namespace }}

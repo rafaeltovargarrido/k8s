@@ -8,7 +8,7 @@ spec:
   sources:
     - chart: curso-apps
       repoURL: https://rafaeltovargarrido.github.io/k8s/charts
-      targetRevision: 0.0.4
+      targetRevision: 0.0.5
       helm:
         releaseName: curso-apps
         parameters:
