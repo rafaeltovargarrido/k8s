@@ -15,6 +15,7 @@
 
 .App-header {
   background-color: green;
+  background-image: url('/images/randimage.png');
   min-height: 100vh;
   display: flex;
   flex-direction: column;
