@@ -19,8 +19,9 @@ function App() {
 
   // Function to update the background image
   const updateBackgroundImage = () => {
-    const randomImageUrl = `/images/randimage.png?timestamp=${new Date().getTime()}`; // Add a timestamp to avoid caching
-    setBgImage(randomImageUrl); // Update state with the new image URL
+    const randomImageUrl = `/images/randimage.png?timestamp=${new Date().getTime()}`;
+    console.log("Updating background image to:", randomImageUrl);
+    setBgImage(randomImageUrl); // Update state
   };
 
   // Use useEffect to update the background image on page load
@@ -29,22 +30,22 @@ function App() {
   }, []);
 
   return (
-    <div className="App" style={{ backgroundImage: `url(${bgImage})` }}> {/* Apply dynamic background */}
+    <div
+      key={bgImage} // Force re-render when bgImage changes
+      className="App"
+      style={{ backgroundImage: `url(${bgImage})` }}
+    >
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Hola desde la clase.
-        </p>
-        <p>
-          Edit <code>src/App.js</code> and save to reload 3.
-        </p>
+        <p>Hola desde la clase.</p>
+        <p>Edit <code>src/App.js</code> and save to reload 3.</p>
         <button className="App-button" onClick={fetchGreeting}>
           Say Hi to the backend
         </button>
         <p>{response}</p>
         <button className="App-button" onClick={updateBackgroundImage}>
           Refresh Background Image
-        </button> {/* Button to manually refresh the background */}
+        </button>
       </header>
     </div>
   );

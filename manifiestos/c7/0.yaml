@@ -107,7 +107,8 @@ data:
         listen 80;
 
         location /images {
-            root /images; # Host path where images are stored
+            root /; # Host path where images are stored
+            add_header Cache-Control "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0";        
             autoindex off;
         }
 
