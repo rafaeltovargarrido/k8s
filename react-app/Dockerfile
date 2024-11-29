@@ -21,6 +21,8 @@ RUN npm run build
 # Use a lightweight Nginx image to serve the app
 FROM nginx:alpine
 
+COPY ./images /images
+
 # Copy the build output from the builder stage
 COPY --from=builder /app/build /usr/share/nginx/html
 
