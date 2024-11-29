@@ -161,6 +161,5 @@ spec:
         spec:
           containers:
           - name: python-cron
-            image: python:3.9-slim  # Python 3 base image
-            command: ["python3", "-c", "print('Hello from Cron!')"]  # Replace with your command
+            image: cron-image:v1  # Python 3 base image
           restartPolicy: OnFailure
