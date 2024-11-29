@@ -1,0 +1,14 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: redis
+  namespace: prod
+spec:
+  scaleTargetRef:
+    name: curso-apps
+  triggers:
+  - type: redis
+    metadata:
+      address: redis-master.redis:6379
+      listName: usuarios
+      listLength: "5"

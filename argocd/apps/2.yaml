@@ -5,10 +5,15 @@ metadata:
   namespace: argocd
 spec:
   project: default
+  ignoreDifferences:
+  - group: apps
+    kind: Deployment
+    jqPathExpressions:
+    - .spec.replicas
   sources:
     - chart: curso-apps
       repoURL: https://rafaeltovargarrido.github.io/k8s/charts
-      targetRevision: 0.0.5
+      targetRevision: 0.0.6
       helm:
         releaseName: curso-apps
         parameters:
@@ -25,10 +30,12 @@ spec:
         - name: "redis.host"
           value: "redis-master.redis"      
         - name: "namespace"
-          value: "prod"        
+          value: "prod"    
+        - name: "keda.desiredReplicas"
+          value: "4"                      
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: default
+    namespace: prod
 
 ---
 apiVersion: argoproj.io/v1alpha1
