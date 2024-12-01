@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: emptydir-example
+spec:
+  containers:
+  - name: data-generator
+    image: busybox
+    command: ["sh", "-c", "echo 'Datos generados' > /data/generated.txt && sleep 3600"]
+    volumeMounts:
+    - name: shared-data
+      mountPath: /data
+  - name: data-consumer
+    image: busybox
+    command: ["sh", "-c", "cat /data/generated.txt && sleep 3600"]
+    volumeMounts:
+    - name: shared-data
+      mountPath: /data
+  volumes:
+  - name: shared-data
+    emptyDir: {}
