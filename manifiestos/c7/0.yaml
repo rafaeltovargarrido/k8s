@@ -163,52 +163,6 @@ spec:
     requests:
       storage: 1Gi
 ---
-apiVersion: batch/v1
-kind: CronJob
-metadata:
-  name: img-cronjob
-spec:
-  schedule: "*/5 * * * *"  # Runs every 5 minutes
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          containers:
-          - name: python-cron
-            image: cron-image:v1  # Python base image
-            volumeMounts:
-              - mountPath: /images  # Path inside the container
-                name: shared-storage    
-          restartPolicy: OnFailure
-          volumes:
-          - name: shared-storage
-            persistentVolumeClaim:
-              claimName: shared-pvc
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: myapp
-  labels:
-    name: myapp
-spec:
-  volumes:
-  - name: shared-storage
-    persistentVolumeClaim:
-      claimName: shared-pvc
-  containers:
-  - name: myapp
-    image: alpine
-    command: ["sh", "-c", "while true; do echo 'Alpine pod is running'; sleep 10; done"]
-    resources:
-      limits:
-        memory: "128Mi"
-        cpu: "500m"
-    volumeMounts:
-      - mountPath: /images  # Path inside the container
-        name: shared-storage   
----
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:

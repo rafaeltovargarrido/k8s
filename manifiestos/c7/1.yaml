@@ -10,8 +10,8 @@ spec:
     volumeMounts:
     - name: shared-data
       mountPath: /data
-  - name: data-consumer
-    image: busybox
+  - name: alpine
+    image: alpine
     command: ["sh", "-c", "cat /data/generated.txt && sleep 3600"]
     volumeMounts:
     - name: shared-data

@@ -1,0 +1,133 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      volumes:
+        - name: pgdata
+          persistentVolumeClaim:
+            claimName: data-postgres
+      containers:
+      - name: postgres
+        image: postgres
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "300m"
+          limits:
+            memory: "256Mi"
+            cpu: "300m"
+        ports:
+        - containerPort: 5432
+          name: postgres
+        volumeMounts: 
+        - mountPath: /data/pgdata
+          name: pgdata
+        env:
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres
+              key: password
+        - name: PGDATA
+          value: /data/pgdata     
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres
+type: Opaque
+data:
+  password: cGFzc3dvcmQ=
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+spec:
+  selector:
+    app: postgres
+  ports:
+  - port: 5432
+    targetPort: postgres
+---              
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgadmin
+  namespace: pgadmin
+spec:
+  selector:
+    matchLabels:
+      app: pgadmin
+  template:
+    metadata:
+      labels:
+        app: pgadmin
+    spec:
+      containers:
+      - name: pgadmin
+        image: dpage/pgadmin4
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "300m"
+          limits:
+            memory: "256Mi"
+            cpu: "300m"
+        ports:
+        - containerPort: 8080
+          name: pgadmin
+        env:
+        - name: PGADMIN_DEFAULT_EMAIL
+          value: user@domain.com
+        - name: PGADMIN_DEFAULT_PASSWORD
+          value: password
+        - name: PGADMIN_LISTEN_PORT
+          value: '8080'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pgadmin
+  namespace: pgadmin
+spec:
+  selector:
+    app: pgadmin
+  ports:
+  - port: 8080
+    targetPort: pgadmin
+---           
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: shared-pv
+spec:
+  capacity:
+    storage: 2Gi  # Size of the storage
+  accessModes:
+    - ReadWriteMany  # Allows multiple pods to read and write
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/data/shared-files/pgdata  # Directory on Minikube's host machine
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data-postgres
+spec:
+  storageClassName: ""
+  volumeName: shared-pv 
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
