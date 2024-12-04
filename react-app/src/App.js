@@ -3,6 +3,9 @@ import './App.css';
 
 function App() {
   const [response, setResponse] = useState(''); // State to hold response from backend
+  const [responseAdd, setResponseAdd] = useState(''); // State to hold response from backend
+  const [responseSize, setResponseSize] = useState(''); // State to hold response from backend
+  const [responseDelete, setResponseDelete] = useState(''); // State to hold response from backend
   const [bgImage, setBgImage] = useState(''); // State to hold the dynamic background image URL
 
   // Function to fetch greeting from the backend
@@ -16,6 +19,41 @@ function App() {
       .catch((error) => console.error('Error:', error));
   };
 
+
+  // Function to fetch greeting from the backend
+  const fetchRemove = () => {
+    fetch('/api/delete')
+      .then((res) => res.text())
+      .then((data) => {
+        console.log(data); // Log response to console
+        setResponseDelete(data); // Set response in state to display on page
+      })
+      .catch((error) => console.error('Error:', error));
+  };
+
+
+  // Function to fetch greeting from the backend
+  const fetchAdd = () => {
+    fetch('/api/addToList')
+      .then((res) => res.text())
+      .then((data) => {
+        console.log(data); // Log response to console
+        setResponseAdd(data); // Set response in state to display on page
+      })
+      .catch((error) => console.error('Error:', error));
+  };
+
+
+  // Function to fetch greeting from the backend
+  const fetchSize = () => {
+    fetch('/api/getSize')
+      .then((res) => res.text())
+      .then((data) => {
+        console.log(data); // Log response to console
+        setResponseSize(data); // Set response in state to display on page
+      })
+      .catch((error) => console.error('Error:', error));
+  };
   // Function to update the background image
   const updateBackgroundImage = () => {
     const randomImageUrl = `/images/randimage.png?timestamp=${new Date().getTime()}`;
@@ -40,6 +78,21 @@ function App() {
           Say Hi to the backend
         </button>
         <p>{response}</p>
+
+        <button className="App-button" onClick={fetchAdd}>
+          Añadir
+        </button>
+        <p>{responseAdd}</p>
+
+        <button className="App-button" onClick={fetchSize}>
+          Tamaño
+        </button>
+        <p>{responseSize}</p>
+
+        <button className="App-button" onClick={fetchRemove}>
+          Eliminar
+        </button>
+        <p>{responseDelete}</p>        
       </header>
     </div>
   );

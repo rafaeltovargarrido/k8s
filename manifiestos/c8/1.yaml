@@ -1,0 +1,238 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: react
+  namespace: dev
+  labels:
+    app: react
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: react
+  template:
+    metadata:
+      labels:
+        app: react
+    spec:
+      volumes:
+        - name: nginx-config-volume
+          configMap:
+            name: nginx-config        
+      containers:
+        - name: react
+          volumeMounts:
+            - name: nginx-config-volume
+              mountPath: /etc/nginx/conf.d/default.conf  # Override default Nginx config
+              subPath: nginx.conf        
+          image: ghcr.io/rafaeltovargarrido/react:latest
+          ports:
+            - containerPort: 80       
+              name: http-react          
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: react
+  namespace: dev
+spec:
+  type: ClusterIP
+  selector:
+    app: react
+  ports:
+  - port: 8080
+    targetPort: http-react
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sprint
+  namespace: dev
+  labels:
+    app: sprint
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sprint
+  template:
+    metadata:
+      labels:
+        app: sprint
+    spec:          
+      containers:
+        - name: sprint           
+          image: ghcr.io/rafaeltovargarrido/sprint:latest
+          ports:
+            - containerPort: 8181
+              name: http-sprint           
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sprint
+  namespace: dev
+spec:
+  type: ClusterIP
+  selector:
+    app: sprint
+  ports:
+  - port: 80
+    targetPort: http-sprint
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress
+  namespace: istio-system
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: "*.local"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ingress-gateway
+                port:
+                  number: 80                
+---
+apiVersion: v1
+data:
+  nginx.conf: |-
+    server {
+        listen 80;
+
+        location / {
+            root /usr/share/nginx/html;
+            try_files $uri /index.html;
+        }
+
+        location /api {
+            rewrite ^/api/(.*) /$1 break;
+            proxy_pass http://sprint;
+        }
+    }
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: dev
+---                  
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: react
+  namespace: dev
+spec:
+  gateways:
+  - gateway
+  hosts:
+  - react.local
+  http:
+  - name: primary        # referenced in canary.trafficRouting.istio.virtualService.routes
+    route:
+    - destination:
+        host: react # referenced in canary.stableService
+        port:
+          number: 8080
+      weight: 100
+---
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: gateway
+  namespace: dev
+spec:
+  # The selector matches the ingress gateway pod labels.
+  # If you installed Istio using Helm following the standard documentation, this would be "istio=ingress"
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "react.local"
+---
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpbin
+  namespace: qa
+  labels:
+    app: httpbin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: httpbin
+  template:
+    metadata:
+      labels:
+        app: httpbin
+    spec:
+      containers:
+        - name: httpbin
+          image: kennethreitz/httpbin 
+          args: ["gunicorn", "-b", "0.0.0.0:80", "httpbin:app", "--log-level", "debug"]          
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: httpbin
+  namespace: qa
+  labels:
+    app: httpbin
+spec:
+  type: ClusterIP
+  selector:
+    app: httpbin
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---                  
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: httpbin
+  namespace: qa
+spec:
+  gateways:
+  - gateway
+  hosts:
+  - httpbin.local
+  - httpbinone.local
+  http:
+  - name: primary        # referenced in canary.trafficRouting.istio.virtualService.routes
+    route:
+    - destination:
+        host: httpbin # referenced in canary.stableService
+        port:
+          number: 80
+      weight: 100
+---
+apiVersion: networking.istio.io/v1
+kind: Gateway
+metadata:
+  name: gateway
+  namespace: qa
+spec:
+  # The selector matches the ingress gateway pod labels.
+  # If you installed Istio using Helm following the standard documentation, this would be "istio=ingress"
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "httpbin.local"
+    - "httpbinone.local"

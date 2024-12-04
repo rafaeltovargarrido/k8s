@@ -1,0 +1,3 @@
+# Deploy the redis-operator
+$ helm upgrade redis-operator ot-helm/redis-operator \
+  --install --create-namespace --namespace ot-operators

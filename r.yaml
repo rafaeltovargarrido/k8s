@@ -1,0 +1,230 @@
+---
+# Source: curso-apps/templates/ns.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: my-namespace
+  labels:
+    environment: production
+    team: devops
+---
+# Source: curso-apps/templates/cm.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: my-namespace
+data:
+  nginx.config: |
+    server {
+        listen 80;
+
+        location / {
+            root /usr/share/nginx/html;
+            try_files $uri /index.html;
+        }
+
+        location /api {
+            rewrite ^/api/(.*) /$1 break;
+            proxy_pass http://sprint:80;
+        }
+    }
+---
+# Source: curso-apps/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: release-name-curso-apps
+  namespace: my-namespace
+  labels:
+    helm.sh/chart: curso-apps-0.0.6
+    app.kubernetes.io/name: curso-apps
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "0.0.1"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http-react
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: curso-apps
+    app.kubernetes.io/instance: release-name
+---
+# Source: curso-apps/templates/service_sprint.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: sprint
+  namespace: my-namespace
+  labels:
+      app: sprint   
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http-sprint
+      protocol: TCP
+      name: http
+  selector:
+      app: sprint
+---
+# Source: curso-apps/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: release-name-curso-apps
+  namespace: my-namespace
+  labels:
+    helm.sh/chart: curso-apps-0.0.6
+    app.kubernetes.io/name: curso-apps
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "0.0.1"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: curso-apps
+      app.kubernetes.io/instance: release-name
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: curso-apps-0.0.6
+        app.kubernetes.io/name: curso-apps
+        app.kubernetes.io/instance: release-name
+        app.kubernetes.io/version: "0.0.1"
+        app.kubernetes.io/managed-by: Helm
+    spec:
+      serviceAccountName: default
+      securityContext:
+        {}
+      containers:
+        - name: curso-apps
+          securityContext:
+            {}
+          image: "react:0.0.1"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http-react
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http-react
+            initialDelaySeconds: 5
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http-react
+            initialDelaySeconds: 5
+            periodSeconds: 15
+          resources:
+            limits:
+              cpu: 100m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          volumeMounts:
+            - mountPath: /etc/nginx/conf.d/default.conf
+              name: nginx-config-volume
+              subPath: nginx.config
+      volumes:
+        - configMap:
+            name: nginx-config
+          name: nginx-config-volume
+---
+# Source: curso-apps/templates/deployment_sprint.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sprint
+  namespace: my-namespace
+  labels:
+    app: sprint
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sprint
+  template:
+    metadata:
+      labels:
+        app: sprint
+    spec:
+      securityContext:
+        {}
+      containers:
+        - name: sprint
+          securityContext:
+            {}
+          image: "sprint:0.0.1"
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 100m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi          
+          ports:
+            - name: http-sprint
+              containerPort: 8181
+              protocol: TCP
+          env:
+            - name: SPRING_REDIS_HOST
+              value: redis.default.svc.cluster.local
+---
+# Source: curso-apps/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: release-name-ingress
+  namespace: my-namespace
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: react.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: release-name-curso-apps
+                port:
+                  number: 80
+---
+# Source: curso-apps/templates/keda.yaml
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: react
+  namespace: my-namespace
+spec:
+  scaleTargetRef:
+    name: release-name-curso-apps
+  maxReplicaCount: 10    
+  minReplicaCount: 1
+  triggers:
+    - metadata:
+        desiredReplicas: "2"
+        end: 0 20 * * 1-5
+        start: 0 6 * * 1-5
+        timezone: Europe/Madrid
+      type: cron
+    - metadata:
+        query: sum(rate(istio_requests_total{destination_service_name="apps-curso-apps",
+          response_code="200"}[1m]))
+        serverAddress: http://prometheus.istio-system:9090
+        threshold: "2"
+      type: prometheus
+    - metadata:
+        value: "75"
+      metricType: Utilization
+      type: cpu

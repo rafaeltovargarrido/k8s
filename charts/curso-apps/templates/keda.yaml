@@ -2,11 +2,11 @@ apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
 metadata:
   name: react
-  namespace: {{ .Values.namespace | default "default" }}
+  namespace: {{ .Values.namespace.name | default "default" }}
 spec:
   scaleTargetRef:
     name: {{ include "react-app.fullname" . }}
   maxReplicaCount: 10    
   minReplicaCount: 1
   triggers:
-    {{- toYaml .Values.keda | nindent 8 }}
+    {{- toYaml .Values.keda | nindent 4 }}

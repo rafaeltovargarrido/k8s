@@ -113,6 +113,9 @@ backend:
   name_port: http-sprint
   labels:
     app: sprint
+  env:
+    - name: SPRING_REDIS_HOST
+      value: "redis.default.svc.cluster.local"    
 
 ingress:
   className: nginx
@@ -120,8 +123,6 @@ ingress:
   path: /
   pathType: Prefix    
 
-redis:
-  host: redis  
 
 prometheus: http://prometheus.istio-system:9090
 
@@ -144,3 +145,9 @@ keda:
     metricType: Utilization # Allowed types are 'Utilization' or 'AverageValue'
     metadata:
       value: "75"       
+
+namespace:
+  name: my-namespace
+  labels:
+    environment: production
+    team: devops

@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Values.backend.host | default "sprint" }}
-  namespace: {{ .Values.namespace | default "default" }}
+  namespace: {{ .Values.namespace.name | default "default" }}
   labels:
     {{- with .Values.backend.labels }}
     {{- toYaml . | nindent 4 }}
@@ -40,5 +40,7 @@ spec:
               containerPort: {{ .Values.backend.port_sprint | default 8080 }}
               protocol: TCP
           env:
-            - name: REDIS_HOST
-              value: {{ .Values.redis.host | default "localhost" }}              
+          {{- range .Values.backend.env }}
+            - name: {{ .name }}
+              value: {{ .value }}
+          {{- end }}
