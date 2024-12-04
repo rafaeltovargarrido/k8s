@@ -2,13 +2,13 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: deny-all
-  namespace: prod
+  name: deny
+  namespace: databases
 spec:
   podSelector: {}  # Apply to all pods in the namespace
   ingress:
   - from:
     - namespaceSelector:
         matchLabels:
-          purpose: prod
+          environment: production
 ---

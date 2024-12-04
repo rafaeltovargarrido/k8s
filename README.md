@@ -63,3 +63,17 @@ Para más detalles, consulta la [documentación oficial de Helm](https://helm.sh
 ## Contribuciones
 
 Si tienes alguna sugerencia o deseas contribuir a este curso, ¡eres bienvenido/a! No dudes en abrir un issue o un pull request.
+
+## Recomendaciones
+
+https://skaffold.dev/docs/quickstart/
+
+https://en.wikipedia.org/wiki/Benchmark_(computing)
+
+https://www.rootdesdezero.com/kurnetes-health-checks/
+
+https://fortio.org/
+
+https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+
+https://k6.io/
